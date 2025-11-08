@@ -62,30 +62,6 @@ npm run preview
 ### 人设提示词放置位置
 - `src/ai/personas.ts`：包含 `ProsecutorPersona` / `DefenderPersona` / `JudgePersona` 的中文占位符。把你的人设提示词粘贴覆盖即可。
 
-### DeepSeek 配置与安全
-
-两种方式：
-
-1) 本地直连（开发用）
-   - 复制 `.env.example` → `.env.local`
-   - 设置：`VITE_DEEPSEEK_API_KEY`、`VITE_DEEPSEEK_BASE_URL`、`VITE_DEEPSEEK_MODEL`
-   - 风险：前端打包会嵌入密钥（Vite 以 `VITE_` 前缀暴露到客户端）。仅建议本地开发使用。
-
-2) Serverless 代理（推荐用于生产）
-   - 已内置 Vercel Function：`api/chat.ts`
-   - 部署到 Vercel 后，在项目环境变量里设置：
-     - `DEEPSEEK_API_KEY=你的Key`
-     - `DEEPSEEK_BASE_URL=https://api.deepseek.com/v1`
-   - 前端 `.env` 中设置：`VITE_USE_PROXY=1`（或设置 `VITE_PROXY_URL` 指向代理域名）
-   - 这样密钥只在服务端使用，前端不再包含密钥。
-
-安全注意：
-- 不要把真实密钥放入仓库。`.env.example` 只放占位符。
-- 如果你已经提交过真实密钥：
-  1) 立即在 DeepSeek 控制台重置/撤销该密钥；
-  2) 用占位符更新 `.env.example` 并提交；
-  3) 如果仓库已推送到远端，考虑用 `git filter-repo` 或 BFG 清理历史中的密钥（可选，但仍需先旋转密钥）。
-
 ## 适配
 
 通过 Tailwind 的响应式类自动适配移动端与桌面端布局。头像 + 气泡布局在窄屏下纵向堆叠，宽屏保持舒适留白。
