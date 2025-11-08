@@ -1,3 +1,8 @@
+# 在线体验
+
+体验版: https://meme-court-27ab.vercel.app/
+生成不出来可能是因为的apikey欠费了
+
 # Meme法庭 · Meme Court
 
 前端单页应用（React + TypeScript + Tailwind CSS）。用户输入辩论主题后，自动生成检察官与辩护人三轮交锋，并由法官给出判决与金句总结。纸片卡通风 UI。
