@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import CaseHeader from '@/components/CaseHeader';
 import Toolbar from '@/components/Toolbar';
 import DebateStage, { Utterance } from '@/components/DebateStage';
+import Poster from '@/components/Poster';
 import LoadingCourtroom from '@/components/LoadingCourtroom';
 import { copyToClipboard } from '@/utils/copy';
 import { generateDebateLLM } from '@/ai/generator';
@@ -21,6 +22,8 @@ const AppInner: React.FC = () => {
   const [loadingKey, setLoadingKey] = useState<number>(0);
   const [exportingPoster, setExportingPoster] = useState<boolean>(false);
   const posterRef = React.useRef<HTMLDivElement | null>(null);
+  const posterStageRef = React.useRef<HTMLDivElement | null>(null); // 离屏裁剪容器
+  const posterContentRef = React.useRef<HTMLDivElement | null>(null); // 离屏完整内容
 
   const canStart = topic.trim().length > 0 && !isGenerating;
 
@@ -108,33 +111,61 @@ const AppInner: React.FC = () => {
   };
 
   const onExportPoster = async () => {
-    if (!debate) {
-      alert('请先完成一场辩论');
-      return;
-    }
+    if (!debate) { alert('请先完成一场辩论'); return; }
     setExportingPoster(true);
-    await new Promise((r) => setTimeout(r, 0)); // 等待一帧让水印可见
+    await new Promise((r) => setTimeout(r, 0));
     try {
       const html2canvas = (await import('html2canvas')).default;
-      const root = posterRef.current || document.body;
-      const canvas = await html2canvas(root as HTMLElement, {
-        backgroundColor: '#FFF8E8',
-        scale: 2,
-        useCORS: true,
-        ignoreElements: (el) => (el as HTMLElement)?.dataset?.exportIgnore === '1',
-      });
-      const url = canvas.toDataURL('image/png');
-      const a = document.createElement('a');
+      const stage = posterStageRef.current!;
+      const content = posterContentRef.current!;
+      if (!stage || !content) throw new Error('Poster stage missing');
+
+      const WIDTH = 1080; // 导出宽度（CSS px）
+      const scale = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+      const MAX_OUTPUT = 16000; // 单图最大像素高度
+      const SLICE_CSS = Math.floor(MAX_OUTPUT / scale); // 单片 CSS 高度
+
+      stage.style.width = WIDTH + 'px';
+      stage.style.overflow = 'hidden';
+      content.style.transform = 'translateY(0)';
+      const totalHeight = content.scrollHeight;
+      const sliceCount = Math.max(1, Math.ceil(totalHeight / SLICE_CSS));
+
+      const urls: string[] = [];
+      for (let i = 0; i < sliceCount; i++) {
+        const y = i * SLICE_CSS;
+        const sliceHeight = Math.min(SLICE_CSS, totalHeight - y);
+        stage.style.height = sliceHeight + 'px';
+        content.style.transform = `translateY(-${y}px)`;
+        const canvas = await html2canvas(stage, {
+          backgroundColor: '#FFF8E8',
+          scale,
+          useCORS: true,
+          windowWidth: WIDTH,
+          windowHeight: sliceHeight,
+          scrollX: 0,
+          scrollY: 0,
+          width: WIDTH,
+          height: sliceHeight,
+        });
+        urls.push(canvas.toDataURL('image/png'));
+      }
+
       const ts = new Date();
       const pad = (n: number) => String(n).padStart(2, '0');
-      const name = `memecourt-${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}.png`;
-      a.href = url;
-      a.download = name;
-      a.click();
+      const base = `memecourt-${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}`;
+      urls.forEach((url, idx) => {
+        const a = document.createElement('a');
+        const suffix = urls.length > 1 ? `-p${idx+1}of${urls.length}` : '';
+        a.href = url;
+        a.download = `${base}${suffix}.png`;
+        a.click();
+      });
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       alert('生成海报失败：' + msg);
     } finally {
+      if (posterContentRef.current) posterContentRef.current.style.transform = 'translateY(0)';
       setExportingPoster(false);
     }
   };
@@ -195,10 +226,17 @@ const AppInner: React.FC = () => {
         {copiedShare && <div className="text-center mt-2 text-sm">已复制分享文案！</div>}
       </footer>
 
-      {/* 导出海报水印（只在导出时显示） */}
-      {exportingPoster && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 poster-watermark select-none">
-          梗图法庭 · Meme Court ｜ memecourt.vercel.app
+      {/* 离屏 Poster 舞台：固定宽度 1080，完整高度；导出时分片裁剪 */}
+      {debate && (
+        <div
+          ref={posterStageRef}
+          style={{ position: 'fixed', left: '-99999px', top: '0', zIndex: -1, background: '#FFF8E8' }}
+        >
+          <div style={{ width: 1080, overflow: 'hidden' }}>
+            <div ref={posterContentRef} style={{ willChange: 'transform' }}>
+              <Poster debate={debate} />
+            </div>
+          </div>
         </div>
       )}
     </div>
