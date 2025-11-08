@@ -45,7 +45,7 @@ const Poster: React.FC<PosterProps> = ({ debate }) => {
     <div
       data-poster-root
       className="paper-card bg-milky w-[1080px] mx-auto p-8"
-      style={{ boxSizing: 'border-box' }}
+      style={{ boxSizing: 'border-box', backgroundColor: '#FFF8E8', color: '#000' }}
     >
       {/* Header */}
       <div className="mb-4">
@@ -91,4 +91,3 @@ const Poster: React.FC<PosterProps> = ({ debate }) => {
 };
 
 export default Poster;
-

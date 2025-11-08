@@ -141,6 +141,7 @@ const AppInner: React.FC = () => {
           backgroundColor: '#FFF8E8',
           scale,
           useCORS: true,
+          foreignObjectRendering: true,
           windowWidth: WIDTH,
           windowHeight: sliceHeight,
           scrollX: 0,
@@ -230,7 +231,7 @@ const AppInner: React.FC = () => {
       {debate && (
         <div
           ref={posterStageRef}
-          style={{ position: 'fixed', left: '-99999px', top: '0', zIndex: -1, background: '#FFF8E8' }}
+          style={{ position: 'fixed', left: 0, top: 0, zIndex: 2147483647, background: '#FFF8E8', opacity: 0, pointerEvents: 'none' }}
         >
           <div style={{ width: 1080, overflow: 'hidden' }}>
             <div ref={posterContentRef} style={{ willChange: 'transform' }}>
