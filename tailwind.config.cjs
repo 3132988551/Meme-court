@@ -18,20 +18,24 @@ module.exports = {
         btnGreen: '#3ED598'
       },
       boxShadow: {
+        // 还原：右下 4px 的纯黑纸片投影（原始风格）
         paper: '4px 4px 0 0 rgba(0,0,0,1)'
       },
       borderWidth: {
         '1_5': '1.5px'
       },
       borderRadius: {
+        // 还原较大的卡片圆角，贴近原版“纸片”观感
         paper: '1.5rem'
       },
       fontFamily: {
-        display: ['"Nunito"', 'ui-rounded', 'system-ui', 'sans-serif'],
-        body: ['"Inter"', 'system-ui', 'sans-serif']
+        // 中文优先，其次英文字体；回退到系统字体
+        zh: ['"Noto Sans SC"', '"ZCOOL KuaiLe"', 'system-ui', 'sans-serif'],
+        en: ['"Poppins"', '"Fredoka"', 'system-ui', 'sans-serif'],
+        display: ['"ZCOOL KuaiLe"', '"Poppins"', 'system-ui', 'sans-serif'],
+        body: ['"Noto Sans SC"', '"Poppins"', 'system-ui', 'sans-serif']
       }
     }
   },
   plugins: []
 };
-

@@ -34,10 +34,12 @@ const LoadingCourtroom: React.FC<Props> = ({ seed = 0 }) => {
   return (
     <section className="paper-card p-6 text-center select-none" aria-live="polite">
       <p className="font-semibold text-gray-900">{msg}</p>
+      <div className="mt-3 progress-bar mx-auto max-w-md" aria-hidden>
+        <div className="progress-inner w-1/3"></div>
+      </div>
       <p className="mt-2 animate-pulse text-lg">● ● ●</p>
     </section>
   );
 };
 
 export default LoadingCourtroom;
-

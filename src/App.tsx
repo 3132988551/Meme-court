@@ -6,6 +6,7 @@ import LoadingCourtroom from '@/components/LoadingCourtroom';
 import { copyToClipboard } from '@/utils/copy';
 import { generateDebateLLM } from '@/ai/generator';
 import type { DebateCase } from '@/types';
+import useGavelSound from '@/utils/useGavelSound';
 
 const AppInner: React.FC = () => {
   const [topic, setTopic] = useState<string>('');
@@ -20,6 +21,7 @@ const AppInner: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loadingKey, setLoadingKey] = useState<number>(0);
   // 海报导出功能已移除
+  const playGavel = useGavelSound();
 
   const canStart = topic.trim().length > 0 && !isGenerating;
 
@@ -45,6 +47,8 @@ const AppInner: React.FC = () => {
       seq.push({ role: 'judge', text: judgeMsg });
       setUtterances(seq);
       setVisibleCount(0);
+      // 生成完成后轻微音效反馈
+      setTimeout(() => playGavel(), 120);
     } catch (e) {
       setStarted(false);
       const msg = e instanceof Error ? e.message : String(e);
@@ -110,7 +114,8 @@ const AppInner: React.FC = () => {
   };
 
   return (
-    <div className="relative max-w-3xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
+    <main className="min-h-screen flex flex-col justify-start sm:justify-center py-6 sm:py-10 lg:py-10">
+    <div className="relative max-w-3xl mx-auto px-4 sm:px-6 space-y-4 sm:space-y-6">
       <CaseHeader
         topic={topic}
         onTopicChange={setTopic}
@@ -148,6 +153,7 @@ const AppInner: React.FC = () => {
       </footer>
 
     </div>
+    </main>
   );
 };
 
