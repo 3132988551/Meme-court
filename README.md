@@ -1,6 +1,6 @@
 # 在线体验
 
-体验版: https://meme-court-27ab.vercel.app/
+体验版: https://meme-court.vercel.app/
 生成不出来可能是因为的apikey欠费了
 
 # Meme法庭 · Meme Court
