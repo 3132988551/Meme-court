@@ -12,7 +12,7 @@ const CaseHeader: React.FC<Props> = ({ topic, onTopicChange, onStart, disabled, 
   return (
     <header className="paper-card p-4 sm:p-6 flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl sm:text-2xl font-extrabold">梗图法庭 · Meme Court</h1>
+        <h1 className="text-xl sm:text-2xl font-extrabold title-cartoon">梗图法庭 · Meme Court</h1>
       </div>
 
       {topic.trim() && (
@@ -31,7 +31,7 @@ const CaseHeader: React.FC<Props> = ({ topic, onTopicChange, onStart, disabled, 
             aria-label="请输入辩论主题"
           />
           <button
-            className="btn-cartoon bg-btnPink hover:brightness-110 whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-cartoon bg-btnPink whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={onStart}
             disabled={disabled}
           >

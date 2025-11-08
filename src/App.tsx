@@ -14,10 +14,13 @@ const AppInner: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState<number>(0);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
+  const [copiedShare, setCopiedShare] = useState<boolean>(false);
   const [auto, setAuto] = useState<boolean>(true);
   const [started, setStarted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingKey, setLoadingKey] = useState<number>(0);
+  const [exportingPoster, setExportingPoster] = useState<boolean>(false);
+  const posterRef = React.useRef<HTMLDivElement | null>(null);
 
   const canStart = topic.trim().length > 0 && !isGenerating;
 
@@ -88,6 +91,54 @@ const AppInner: React.FC = () => {
     setTimeout(() => setCopied(false), 1000);
   };
 
+  const shareCopy = useMemo(() => {
+    if (!debate) return '';
+    const picks = [
+      `今天的法庭真精彩，我押${debate.summary?.verdict === 'not_guilty' ? '无罪' : debate.summary?.verdict === 'guilty' ? '有罪' : '摇摆'} ⚖️ #梗图法庭`,
+      `${debate.topic}｜法官金句：${debate.summary?.lines?.[0] || ''} #梗图法庭`,
+      `我把「${debate.topic}」拉上法庭了，判词：${debate.summary?.slogan || '不打无准备之仗'} ⚖️ #梗图法庭`,
+    ].filter(Boolean);
+    return picks[Math.floor(Math.random() * picks.length)];
+  }, [debate]);
+
+  const onCopyShare = async () => {
+    const ok = await copyToClipboard(shareCopy || '梗图法庭 · Meme Court');
+    setCopiedShare(ok);
+    setTimeout(() => setCopiedShare(false), 1000);
+  };
+
+  const onExportPoster = async () => {
+    if (!debate) {
+      alert('请先完成一场辩论');
+      return;
+    }
+    setExportingPoster(true);
+    await new Promise((r) => setTimeout(r, 0)); // 等待一帧让水印可见
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const root = posterRef.current || document.body;
+      const canvas = await html2canvas(root as HTMLElement, {
+        backgroundColor: '#FFF8E8',
+        scale: 2,
+        useCORS: true,
+        ignoreElements: (el) => (el as HTMLElement)?.dataset?.exportIgnore === '1',
+      });
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      const ts = new Date();
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const name = `memecourt-${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}.png`;
+      a.href = url;
+      a.download = name;
+      a.click();
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      alert('生成海报失败：' + msg);
+    } finally {
+      setExportingPoster(false);
+    }
+  };
+
   // 无 i18n 依赖
   // Auto mode: reveal next every 1.5s
   useEffect(() => {
@@ -104,13 +155,13 @@ const AppInner: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
+    <div ref={posterRef} className="relative max-w-3xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
       <CaseHeader
         topic={topic}
         onTopicChange={setTopic}
         onStart={startDebate}
         disabled={!canStart}
-        showControls={!started}
+        showControls={!started && !exportingPoster}
       />
 
       {isGenerating && (<LoadingCourtroom seed={loadingKey} />)}
@@ -131,10 +182,25 @@ const AppInner: React.FC = () => {
         />
       )}
 
-      <footer className="paper-card p-4 sm:p-6">
-        <Toolbar onNew={onNew} onCopy={onCopy} auto={auto} onToggleAuto={() => setAuto((v) => !v)} />
-        {copied && <div className="text-center mt-2 text-sm">已复制！</div>}
+      <footer className="paper-card p-4 sm:p-6" data-export-ignore="1">
+        <Toolbar
+          onNew={onNew}
+          onCopy={onCopy}
+          onCopyShare={onCopyShare}
+          onExportPoster={onExportPoster}
+          auto={auto}
+          onToggleAuto={() => setAuto((v) => !v)}
+        />
+        {copied && <div className="text-center mt-2 text-sm">已复制文本！</div>}
+        {copiedShare && <div className="text-center mt-2 text-sm">已复制分享文案！</div>}
       </footer>
+
+      {/* 导出海报水印（只在导出时显示） */}
+      {exportingPoster && (
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 poster-watermark select-none">
+          梗图法庭 · Meme Court ｜ memecourt.vercel.app
+        </div>
+      )}
     </div>
   );
 };
