@@ -33,9 +33,7 @@
   .title-cartoon {
     text-shadow: 1px 1px 0 #000;
   }
-  .poster-watermark {
-    @apply text-[12px] sm:text-[13px] font-semibold text-black/70;
-  }
+  /* poster-watermark 已移除 */
 }
 
 html, body, #root {
