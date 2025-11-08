@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="#FFF8E8" stroke="#000" stroke-width="2"/>
+  <!-- Gavel handle -->
+  <rect x="18" y="38" width="28" height="6" rx="3" fill="#FFE577" stroke="#000" stroke-width="2" transform="rotate(-20 32 41)"/>
+  <!-- Gavel head -->
+  <rect x="30" y="21" width="16" height="12" rx="3" fill="#FFE577" stroke="#000" stroke-width="2" transform="rotate(-20 38 27)"/>
+  <rect x="24" y="24" width="10" height="8" rx="2" fill="#FFE577" stroke="#000" stroke-width="2" transform="rotate(-20 29 28)"/>
+  <!-- accents -->
+  <circle cx="18" cy="22" r="2" fill="#FFB5C2" stroke="#000" stroke-width="1"/>
+  <circle cx="46" cy="48" r="2" fill="#A6D8FF" stroke="#000" stroke-width="1"/>
+</svg>
+
