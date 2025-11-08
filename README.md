@@ -1,4 +1,4 @@
-# 梗图法庭 · Meme Court
+# Meme法庭 · Meme Court
 
 前端单页应用（React + TypeScript + Tailwind CSS）。用户输入辩论主题后，自动生成检察官与辩护人三轮交锋，并由法官给出判决与金句总结。纸片卡通风 UI。
 

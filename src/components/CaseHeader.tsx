@@ -12,7 +12,7 @@ const CaseHeader: React.FC<Props> = ({ topic, onTopicChange, onStart, disabled, 
   return (
     <header className="paper-card p-4 sm:p-6 flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl sm:text-2xl font-extrabold title-cartoon">梗图法庭 · Meme Court</h1>
+        <h1 className="text-xl sm:text-2xl font-extrabold title-cartoon">Meme法庭 · Meme Court</h1>
       </div>
 
       {topic.trim() && (

@@ -14,11 +14,12 @@ const AppInner: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState<number>(0);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
-  const [copiedShare, setCopiedShare] = useState<boolean>(false);
+  // 分享文案功能已移除
   const [auto, setAuto] = useState<boolean>(true);
   const [started, setStarted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingKey, setLoadingKey] = useState<number>(0);
+  // 海报导出功能已移除
 
   const canStart = topic.trim().length > 0 && !isGenerating;
 
@@ -65,7 +66,7 @@ const AppInner: React.FC = () => {
 
   const plainText = useMemo(() => {
     if (!debate) return '';
-    const title = `【梗图法庭 · Meme Court】`;
+    const title = `【Meme法庭 · Meme Court】`;
     const header = `${title}\n${debate.topic}\n`;
     const body = debate.rounds
       .map((r, i) => {
@@ -89,21 +90,7 @@ const AppInner: React.FC = () => {
     setTimeout(() => setCopied(false), 1000);
   };
 
-  const shareCopy = useMemo(() => {
-    if (!debate) return '';
-    const picks = [
-      `今天的法庭真精彩，我押${debate.summary?.verdict === 'not_guilty' ? '无罪' : debate.summary?.verdict === 'guilty' ? '有罪' : '摇摆'} ⚖️ #梗图法庭`,
-      `${debate.topic}｜法官金句：${debate.summary?.lines?.[0] || ''} #梗图法庭`,
-      `我把「${debate.topic}」拉上法庭了，判词：${debate.summary?.slogan || '不打无准备之仗'} ⚖️ #梗图法庭`,
-    ].filter(Boolean);
-    return picks[Math.floor(Math.random() * picks.length)];
-  }, [debate]);
-
-  const onCopyShare = async () => {
-    const ok = await copyToClipboard(shareCopy || '梗图法庭 · Meme Court');
-    setCopiedShare(ok);
-    setTimeout(() => setCopiedShare(false), 1000);
-  };
+  // 分享文案与海报导出相关逻辑已移除
 
   // 海报功能已移除
 
@@ -154,12 +141,10 @@ const AppInner: React.FC = () => {
         <Toolbar
           onNew={onNew}
           onCopy={onCopy}
-          onCopyShare={onCopyShare}
           auto={auto}
           onToggleAuto={() => setAuto((v) => !v)}
         />
         {copied && <div className="text-center mt-2 text-sm">已复制文本！</div>}
-        {copiedShare && <div className="text-center mt-2 text-sm">已复制分享文案！</div>}
       </footer>
 
     </div>

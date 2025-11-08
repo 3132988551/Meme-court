@@ -10,7 +10,7 @@ interface LLMResp {
 
 function systemPrompt() {
   return [
-    '你是“梗图法庭 · Meme Court”的辩论编排官。',
+    '你是“Meme法庭 · Meme Court”的辩论编排官。',
     '目标：让最终可见的发言与三位角色的人设高度一致。',
     '要求：',
     '1) 仅输出严格符合 schema 的 JSON；',
@@ -88,8 +88,7 @@ ${schema}`;
   return ask;
 }
 
-export async function generateDebateLLM(topic: string): Promise<{ rounds: Round[]; summary: Summary }>
-{
+export async function generateDebateLLM(topic: string): Promise<{ rounds: Round[]; summary: Summary }> {
   try {
     const content = await chatComplete([
       { role: 'system', content: systemPrompt() },

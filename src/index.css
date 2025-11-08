@@ -73,3 +73,8 @@ body::before {
   background-position: 0 0, 4px 4px;
   background-size: 8px 8px;
 }
+
+/* 导出期间去掉全局纸纹覆盖，避免 foreignObject 渲染负担 */
+/* 导出相关样式已移除 */
+
+/* 保留空位（此前用于导出切片避断，现已移除） */
