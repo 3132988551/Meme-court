@@ -231,7 +231,7 @@ const AppInner: React.FC = () => {
       {debate && (
         <div
           ref={posterStageRef}
-          style={{ position: 'fixed', left: 0, top: 0, zIndex: 2147483647, background: '#FFF8E8', opacity: 0, pointerEvents: 'none' }}
+          style={{ position: 'fixed', left: '-100000px', top: 0, zIndex: 2147483647, background: '#FFF8E8', pointerEvents: 'none' }}
         >
           <div style={{ width: 1080, overflow: 'hidden' }}>
             <div ref={posterContentRef} style={{ willChange: 'transform' }}>
